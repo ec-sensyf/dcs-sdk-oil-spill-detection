@@ -105,6 +105,7 @@
 							<target>
 								<chmod dir="/application" includes="**/run" perm="755" />
 								<chmod file="/application/application.xml" perm="664"/>
+								<chmod file="/application/job_template_2/bin/placemark_counter.py" perm="777"/>
 							</target>
 						</configuration>
 						<goals>
