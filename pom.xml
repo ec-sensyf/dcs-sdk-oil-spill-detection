@@ -230,6 +230,7 @@
 						<provide>${project.artifactId}</provide>
 					</provides>
 					<requires>
+						<require>java-1.7.0-openjdk</require>
 						<require>miniconda-3.8.3</require>
 						<require>sensyf-tile</require>
 						<require>sensyf-mail</require>
