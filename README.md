@@ -7,7 +7,7 @@ This repository contains the SDK application for oil spills detection using Sent
 **IDEA**: Get Sentinel-1 data from the catalogue, for a time interval, tile the products and detect oil spills generating a KML file for each one.
       The parallelization on Hadoop for this usecase is performed by product during the first job (data access and tile) and by tile during the second job (oil spill detection) .
 
-**Region of interest ** - Mediterranean Sea
+**Region of interest **: Mediterranean Sea
 
 --------------
 
