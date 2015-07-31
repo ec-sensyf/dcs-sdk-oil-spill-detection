@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# ============================================================================                                                                                                     
+# $Id$                                                                                                                                                                             
+#                                                                                                                                                                                  
+# $Revision$                                                                                                                                                                       
+# $Date$                                                                                                                                                                           
+# $LastChangedBy$                                                                                                                                                                  
+# ============================================================================                                                                                                     
+# DESCRIPTION                                                                                                                                                                      
+# ============================================================================                                                                                                     
+# PROJECT       : SenSyF                                                                                                                                                           
+# COMPANY       : DEIMOS Engenharia S.A.                                                                                                                                           
+# COMPONENT     : Streaming Executables                                                                                                                                            
+# LANGUAGE      : Bash                                                                                                                                                             
+# ----------------------------------------------------------------------------                                                                                                     
+# PURPOSE                                                                                                                                                                          
+#                                                                                                                                                                                  
+# This file is the streaming executable for the Job 1 of SDK-TS-004.
+# ========================================================================== #                                                                                                     
+
+# source the ciop functions (e.g. ciop-log)
+source ${ciop_job_include}
+
+# define the exit codes
+SUCCESS=0
+ERR_NOINPUT=1
+ERR_NOPARAMS=2
+ERR_GDAL=4
+ERR_COPY=5
+
+# add a trap to exit gracefully
+function cleanExit ()
+{
+   local retval=$?
+   local msg="" 
+   case "$retval" in
+     $SUCCESS)      msg="Processing successfully concluded";;
+     $ERR_NOPARAMS) msg="Outout format not defined";;
+     $ERR_GDAL)    msg="Graph processing of job ${JOBNAME} failed (exit code $res)";;
+     *)             msg="Unknown error";;
+   esac
+   [ "$retval" != "0" ] && ciop-log "ERROR" "Error $retval - $msg, processing aborted" || ciop-log "INFO" "$msg" 
+   exit $retval
+}
+trap cleanExit EXIT
+
+# retrieve the parameters value from workflow or job default value                                                                                                                  
+size_x=`ciop-getparam size_x`
+size_y=`ciop-getparam size_y`
+
+# run a check on the format value                                                                                                                                                   
+[ -z "$size_x" ] && exit $ERR_NOPARAMS
+[ -z "$size_y" ] && exit $ERR_NOPARAMS
+
+# create the input directory
+INPUTDIR=$TMPDIR/inputs/
+mkdir -p $TMPDIR/inputs/
+
+TILEDIR=$TMPDIR/tiles/
+mkdir -p $TMPDIR/tiles/
+
+export NEST_HOME=/application/shared/bin
+#read inputs
+while read inputurls
+    do
+        enclosure=`opensearch-client "$inputurls" enclosure`
+	ciop-copy -f -o $INPUTDIR $enclosure >/dev/null
+	[ "$?" == "0" ] || exit $ERR_COPY
+        
+	product_folder=`ls $INPUTDIR`
+	input_dir="$INPUTDIR$product_folder"
+	sensyf-tile -s $size_x $size_y $input_dir $TILEDIR -od
+
+	# publish outputs
+	ciop-publish $TILEDIR/*
+	rm $TILEDIR/*
+    done
+
+exit 0

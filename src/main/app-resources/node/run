@@ -1,0 +1,18 @@
+#!/opt/anaconda/bin/python
+
+import site
+import os
+import sys
+
+# add cioppy to the search path
+sys.path.append('/usr/lib/ciop/python/')
+import cioppy
+ciop = cioppy.Cioppy() 
+
+# write a log entry
+ciop.log('INFO', 'Python DCS')
+
+# input comes from STDIN (standard input)
+for line in sys.stdin:
+ 	# do elaboration
+    ciop.log('INFO', 'processing input: ' + line)

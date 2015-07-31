@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# ============================================================================                                                                                                     
+# $Id$                                                                                                                                                                             
+#                                                                                                                                                                                  
+# $Revision$                                                                                                                                                                       
+# $Date$                                                                                                                                                                           
+# $LastChangedBy$                                                                                                                                                                  
+# ============================================================================                                                                                                     
+# DESCRIPTION                                                                                                                                                                      
+# ============================================================================                                                                                                     
+# PROJECT       : SenSyF                                                                                                                                                           
+# COMPANY       : DEIMOS Engenharia S.A.                                                                                                                                           
+# COMPONENT     : Streaming Executables                                                                                                                                            
+# LANGUAGE      : Bash                                                                                                                                                             
+# ----------------------------------------------------------------------------                                                                                                     
+# PURPOSE                                                                                                                                                                          
+#                                                                                                                                                                                  
+# This file is the streaming executable for the Job 2 of the SDK-TS-004.                                                                                                           
+# ========================================================================== #                                                                                                     
+
+# source the ciop functions (e.g. ciop-log)
+source ${ciop_job_include}
+
+# define the exit codes
+SUCCESS=0
+ERR_NOINPUT=1
+ERR_NOPARAMS=2
+ERR_GDAL=4
+ERR_COPY=5
+ERR_PYTHON=6
+
+# add a trap to exit gracefully
+function cleanExit ()
+{
+   local retval=$?
+   local msg="" 
+   case "$retval" in
+     $SUCCESS)      msg="Processing successfully concluded";;
+     $ERR_NOPARAMS) msg="Outout format not defined";;
+     $ERR_GDAL)    msg="Graph processing of job ${JOBNAME} failed (exit code $res)";;
+     *)             msg="Unknown error";;
+   esac
+   [ "$retval" != "0" ] && ciop-log "ERROR" "Error $retval - $msg, processing aborted" || ciop-log "INFO" "$msg" 
+   exit $retval
+}
+trap cleanExit EXIT
+
+# create the input directory
+mkdir -p $TMPDIR/inputs/
+export INPUTDIR=$TMPDIR/inputs/
+
+# create the temporary directory
+mkdir -p $TMPDIR/oil_spills
+export TEMP=$TMPDIR/oil_spills
+
+# create the second temporary directory                                                                                                                                           
+mkdir -p $TMPDIR/oil_spills_bin
+export TEMP2=$TMPDIR/oil_spills_bin
+
+# create the KML directory
+mkdir -p $TMPDIR/kml_files
+export KMLDIR=$TMPDIR/kml_files
+
+# create the coords directory                                                                                                                                                     
+mkdir -p $TMPDIR/coord_files
+export COORDSDIR=$TMPDIR/coord_files
+
+export ext='_coords.txt'
+
+# read inputs
+while read input_from_previous_job
+    do
+    if [[ "$input_from_previous_job" =~ "_0_" ]] || [[ "$input_from_previous_job" =~ "_25000_" ]]
+    then
+        echo "Border tile"
+    else
+        INPUTPRODUCT=`ciop-copy -o $INPUTDIR $input_from_previous_job`
+        [ "$?" == "0" ] || exit $ERR_COPY
+        file=$(basename "$INPUTPRODUCT")
+        filename="${file%.*}"
+        # report activity                                                                                                                                                                                                                    
+        ciop-log "INFO" "Retrieved $INPUTPRODUCT"
+
+        # run job2 (per input)                                                                                                                                                                                                               
+        export GPT=/application/shared/bin/gpt.sh
+        $GPT /application/job_template_2/bin/oil_spill_algorithm.xml -Ssource=$INPUTPRODUCT -Ttarget=$TEMP/$filename -f 'GeoTIFF' | xargs -I {} bash -c 'source ${ciop_job_include}; ciop-log "DEBUG" "{}"'
+        gdal_calc.py -A $TEMP/* --A_band=2 --outfile=$TEMP2/$filename --calc="A==1" --NoDataValue=0
+        gdal_polygonize.py $TEMP2/* $KMLDIR/$filename -f "KML"
+        /application/job_template_2/bin/placemark_counter.py $KMLDIR/* $COORDSDIR/$filename$ext
+        [ "$?" == "0" ] || exit $ERR_PYTHON
+        if [ `ls -1 $KMLDIR/ | wc -l` -ne 0 ]
+        then
+            lftp -u sftp-sensyf,DW3#sensYf sftp://sftp-sensyf@ftp.deimos.com.pt/public/SDK-TS-004/coords -e "put $COORDSDIR/$filename$ext;quit"
+            lftp -u sftp-sensyf,DW3#sensYf sftp://sftp-sensyf@ftp.deimos.com.pt/public/SDK-TS-004/outputs -e "put $KMLDIR/$filename;quit"
+            rm $TEMP/*
+            rm $TEMP2/*
+            rm $KMLDIR/*
+            rm $COORDSDIR/*
+        else
+            rm $TEMP/*
+            rm $TEMP2/*
+        fi
+    fi
+    done
+
+exit 0

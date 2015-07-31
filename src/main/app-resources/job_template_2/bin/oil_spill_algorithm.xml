@@ -1,0 +1,106 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>${source}</file>
+    </parameters>
+  </node>
+  <node id="Oil-Spill-Detection">
+    <operator>Oil-Spill-Detection</operator>
+    <sources>
+      <sourceProduct refid="Land-Sea-Mask"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <sourceBands>
+        <band>Amplitude_VV</band>
+      </sourceBands>
+      <backgroundWindowSize>61</backgroundWindowSize>
+      <k>2.0</k>
+    </parameters>
+  </node>
+  <node id="Oil-Spill-Clustering">
+    <operator>Oil-Spill-Clustering</operator>
+    <sources>
+      <sourceProduct refid="Oil-Spill-Detection"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <minClusterSizeInKm2>0.1</minClusterSizeInKm2>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="Oil-Spill-Clustering"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>${target}</file>
+      <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+  <node id="Reproject">
+    <operator>Reproject</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <wktFile/>
+      <crs>AUTO:42001</crs>
+      <resampling>Bilinear</resampling>
+      <referencePixelX/>
+      <referencePixelY/>
+      <easting/>
+      <northing/>
+      <orientation>0.0</orientation>
+      <pixelSizeX/>
+      <pixelSizeY/>
+      <width/>
+      <height/>
+      <tileSizeX/>
+      <tileSizeY/>
+      <orthorectify>false</orthorectify>
+      <elevationModelName/>
+      <noDataValue/>
+      <includeTiePointGrids>true</includeTiePointGrids>
+      <addDeltaBands>false</addDeltaBands>
+    </parameters>
+  </node>
+  <node id="Land-Sea-Mask">
+    <operator>Create-LandMask</operator>
+    <sources>
+      <sourceProduct refid="Reproject"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <sourceBands>
+        <band>Amplitude_VV</band>
+      </sourceBands>
+      <landMask>true</landMask>
+      <useSRTM>true</useSRTM>
+      <geometry/>
+      <invertGeometry>false</invertGeometry>
+      <byPass>false</byPass>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="Read">
+      <displayPosition x="17.0" y="66.0"/>
+    </node>
+    <node id="Oil-Spill-Detection">
+      <displayPosition x="288.0" y="62.0"/>
+    </node>
+    <node id="Oil-Spill-Clustering">
+      <displayPosition x="430.0" y="65.0"/>
+    </node>
+    <node id="Write">
+      <displayPosition x="463.0" y="182.0"/>
+    </node>
+    <node id="Reproject">
+      <displayPosition x="91.0" y="66.0"/>
+    </node>
+    <node id="Land-Sea-Mask">
+      <displayPosition x="168.0" y="68.0"/>
+    </node>
+  </applicationData>
+</graph>

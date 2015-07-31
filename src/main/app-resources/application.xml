@@ -1,0 +1,57 @@
+<application id="Oil_Spill_Detection">
+	<jobTemplates>
+		<jobTemplate id="data_access_tile">
+			<streamingExecutable>/application/job_template_1/run</streamingExecutable>
+			<defaultParameters>
+			        <parameter id="time_start" title="Time Start" abstract="Time start to search inputs" scope="runtime" type="opensearch" target="time:start">2015-04-23</parameter>
+				<parameter id="time_end" title="Time End" abstract="Time end to search inputs" scope="runtime" type="opensearch" target="time:end">2015-04-23</parameter>
+				<parameter id="size_x">2500</parameter>
+				<parameter id="size_y">5000</parameter>
+			</defaultParameters>
+			<defaultJobconf>
+				<property id="mapred.task.timeout">36000000</property>
+			</defaultJobconf>
+		</jobTemplate>
+		<jobTemplate id="oil_spill_detection">
+			<streamingExecutable>/application/job_template_2/run</streamingExecutable>
+			<defaultParameters>
+			</defaultParameters>
+			<defaultJobconf>
+				<property id="mapred.task.timeout">360000</property>
+			</defaultJobconf>
+		</jobTemplate>
+		<jobTemplate id="email_notification">
+			<streamingExecutable>/application/job_template_3/run</streamingExecutable>
+			<defaultParameters>
+			  <parameter id="subject">SenSyF_Automatic_Notification</parameter>
+			  <parameter id="body">/application/job_template_3/etc/message_body.txt</parameter>
+			  <parameter id="email_address">joao.andrade@deimos.com.pt</parameter>
+			</defaultParameters>
+			<defaultJobconf>
+				<property id="ciop.job.max.tasks">1</property>
+				<property id="mapred.task.timeout">360000</property>
+			</defaultJobconf>
+		</jobTemplate>
+	</jobTemplates>
+	<workflow id="wf-Oil_Spill_Detection" title="Oil Spill Detection" abstract="This application uses NEST to detect oil spills">
+		<workflowVersion>1.0</workflowVersion>
+		<node id="node_data_access_tile">
+			<job id="data_access_tile"></job>
+			<sources>
+			        <source refid="cas:series">https://data2.terradue.com/eop/sentinel1/series/med/description</source>
+			</sources>
+		</node>
+		<node id="node_oil_spill_detection">
+			<job id="oil_spill_detection"></job>
+			<sources>
+				<source refid="wf:node">node_data_access_tile</source>
+			</sources>
+		</node>
+		<node id="node_email_notification">
+			<job id="email_notification"></job>
+			<sources>
+				<source refid="wf:node">node_oil_spill_detection</source>
+			</sources>
+		</node>
+	</workflow>
+</application>

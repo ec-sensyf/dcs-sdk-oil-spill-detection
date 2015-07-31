@@ -1,0 +1,5 @@
+The Demonstration Test for the Test Scenario 4 was completed with success.
+
+The Oil Spills detected over the Mediterranean Sea can be checked on the SenSyF Web Portal.
+
+SenSyF SDK - automatic email notification

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# ============================================================================                                                                                                     
+# $Id$                                                                                                                                                                             
+#                                                                                                                                                                                  
+# $Revision$                                                                                                                                                                       
+# $Date$                                                                                                                                                                           
+# $LastChangedBy$                                                                                                                                                                  
+# ============================================================================                                                                                                     
+# DESCRIPTION                                                                                                                                                                      
+# ============================================================================                                                                                                     
+# PROJECT       : SenSyF                                                                                                                                                           
+# COMPANY       : DEIMOS Engenharia S.A.                                                                                                                                           
+# COMPONENT     : Streaming Executables                                                                                                                                            
+# LANGUAGE      : Bash                                                                                                                                                             
+# ----------------------------------------------------------------------------                                                                                                     
+# PURPOSE                                                                                                                                                                          
+#                                                                                                                                                                                  
+# This file is the streaming executable for the Job 3 of the SDK-TS-004.                                                                                                           
+# ========================================================================== #                                                                                                     
+
+# source the ciop functions (e.g. ciop-log)
+source ${ciop_job_include}
+
+# define the exit codes
+SUCCESS=0
+ERR_NOINPUT=1
+ERR_NOPARAMS=2
+ERR_GDAL=4
+ERR_COPY=5
+ERR_PYTHON=6
+
+# add a trap to exit gracefully
+function cleanExit ()
+{
+   local retval=$?
+   local msg="" 
+   case "$retval" in
+     $SUCCESS)      msg="Processing successfully concluded";;
+     $ERR_NOPARAMS) msg="Outout format not defined";;
+     $ERR_GDAL)    msg="Graph processing of job ${JOBNAME} failed (exit code $res)";;
+     *)             msg="Unknown error";;
+   esac
+   [ "$retval" != "0" ] && ciop-log "ERROR" "Error $retval - $msg, processing aborted" || ciop-log "INFO" "$msg" 
+   exit $retval
+}
+trap cleanExit EXIT
+
+# retrieve the parameters value from workflow or job default value                                                                                                                 
+subject=`ciop-getparam subject`
+body=`ciop-getparam body`
+email_address=`ciop-getparam email_address`
+
+# run a check on the format value                                                                                                                                                 
+[ -z "$subject" ] && exit $ERR_NOPARAMS
+[ -z "$body" ] && exit $ERR_NOPARAMS
+[ -z "$email_address" ] && exit $ERR_NOPARAMS
+
+sensyf-mail -s $subject -b $body -m $email_address
+
+exit 0
