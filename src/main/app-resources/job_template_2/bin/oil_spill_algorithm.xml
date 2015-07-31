@@ -46,7 +46,7 @@
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <wktFile/>
-      <crs>AUTO:42001</crs>
+      <crs>EPSG:4326</crs>
       <resampling>Bilinear</resampling>
       <referencePixelX/>
       <referencePixelY/>
