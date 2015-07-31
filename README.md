@@ -29,7 +29,7 @@ This repository contains the SDK application for oil spills detection using Sent
 
       ```bash
       cd
-      git clone git@github.com:ec-sensyf/dcs-sdk-oil-spill-detection.git
+      git clone https://github.com/ec-sensyf/dcs-sdk-oil-spill-detection.git
       cd dcs-sdk-cloud2
       mvn install
       ```
