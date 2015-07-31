@@ -230,6 +230,8 @@
 					</provides>
 					<requires>
 						<require>miniconda-3.8.3</require>
+						<require>sensyf-tile</require>
+						<require>sensyf-mail</require>
 					</requires>
 				</configuration>
 			</plugin>
