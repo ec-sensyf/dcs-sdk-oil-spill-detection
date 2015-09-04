@@ -237,6 +237,7 @@
 						<require>miniconda-3.8.3</require>
 						<require>sensyf-tile</require>
 						<require>sensyf-mail</require>
+						<require>lftp</require>
 					</requires>
 				</configuration>
 			</plugin>
