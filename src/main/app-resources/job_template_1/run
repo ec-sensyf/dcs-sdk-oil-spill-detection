@@ -64,7 +64,12 @@ export NEST_HOME=/application/shared/bin
 #read inputs
 while read inputurls
     do
-        enclosure=`opensearch-client "$inputurls" enclosure`
+        res=1
+        enclosure="" 
+        while [ -z "$enclosure" ] || [ $res -gt 0 ]; do
+                enclosure=`opensearch-client "$inputurls" enclosure`
+                res=$?
+        done
 	ciop-copy -f -o $INPUTDIR $enclosure >/dev/null
 	[ "$?" == "0" ] || exit $ERR_COPY
         
