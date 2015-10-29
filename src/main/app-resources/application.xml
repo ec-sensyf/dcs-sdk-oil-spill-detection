@@ -17,7 +17,7 @@
 			<defaultParameters>
 			</defaultParameters>
 			<defaultJobconf>
-				<property id="mapred.task.timeout">360000</property>
+				<property id="mapred.task.timeout">36000000</property>
 			</defaultJobconf>
 		</jobTemplate>
 		<jobTemplate id="email_notification">
