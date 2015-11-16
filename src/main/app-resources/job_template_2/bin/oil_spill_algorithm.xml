@@ -13,9 +13,7 @@
       <sourceProduct refid="Land-Sea-Mask"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <sourceBands>
-        <band>Amplitude_VV</band>
-      </sourceBands>
+      <sourceBands/>
       <backgroundWindowSize>61</backgroundWindowSize>
       <k>2.0</k>
     </parameters>
@@ -35,72 +33,53 @@
       <sourceProduct refid="Oil-Spill-Clustering"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <file>${target}</file>
+      <file>C:\Users\joaa\${target}.tif</file>
       <formatName>GeoTIFF</formatName>
-    </parameters>
-  </node>
-  <node id="Reproject">
-    <operator>Reproject</operator>
-    <sources>
-      <sourceProduct refid="Read"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <wktFile/>
-      <crs>EPSG:4326</crs>
-      <resampling>Bilinear</resampling>
-      <referencePixelX/>
-      <referencePixelY/>
-      <easting/>
-      <northing/>
-      <orientation>0.0</orientation>
-      <pixelSizeX/>
-      <pixelSizeY/>
-      <width/>
-      <height/>
-      <tileSizeX/>
-      <tileSizeY/>
-      <orthorectify>false</orthorectify>
-      <elevationModelName/>
-      <noDataValue/>
-      <includeTiePointGrids>true</includeTiePointGrids>
-      <addDeltaBands>false</addDeltaBands>
     </parameters>
   </node>
   <node id="Land-Sea-Mask">
     <operator>Create-LandMask</operator>
     <sources>
-      <sourceProduct refid="Reproject"/>
+      <sourceProduct refid="Ellipsoid-Correction-GG"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement"/>
+  </node>
+  <node id="Ellipsoid-Correction-GG">
+    <operator>Ellipsoid-Correction-GG</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <sourceBands>
-        <band>Amplitude_VV</band>
-      </sourceBands>
-      <landMask>true</landMask>
-      <useSRTM>true</useSRTM>
-      <geometry/>
-      <invertGeometry>false</invertGeometry>
-      <byPass>false</byPass>
+      <sourceBands/>
+      <imgResamplingMethod>BILINEAR_INTERPOLATION</imgResamplingMethod>
+      <mapProjection>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
+  DATUM[&quot;WGS84&quot;, &#xd;
+    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
+  PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
+  UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+  AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</mapProjection>
     </parameters>
   </node>
   <applicationData id="Presentation">
     <Description/>
     <node id="Read">
-      <displayPosition x="17.0" y="66.0"/>
+      <displayPosition x="1.0" y="138.0"/>
     </node>
     <node id="Oil-Spill-Detection">
-      <displayPosition x="288.0" y="62.0"/>
+      <displayPosition x="382.0" y="124.0"/>
     </node>
     <node id="Oil-Spill-Clustering">
-      <displayPosition x="430.0" y="65.0"/>
+      <displayPosition x="420.0" y="180.0"/>
     </node>
     <node id="Write">
-      <displayPosition x="463.0" y="182.0"/>
-    </node>
-    <node id="Reproject">
-      <displayPosition x="91.0" y="66.0"/>
+      <displayPosition x="438.0" y="261.0"/>
     </node>
     <node id="Land-Sea-Mask">
-      <displayPosition x="168.0" y="68.0"/>
+      <displayPosition x="276.0" y="130.0"/>
+    </node>
+    <node id="Ellipsoid-Correction-GG">
+      <displayPosition x="103.0" y="145.0"/>
     </node>
   </applicationData>
 </graph>
