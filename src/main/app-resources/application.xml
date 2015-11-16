@@ -3,8 +3,8 @@
 		<jobTemplate id="data_access_tile">
 			<streamingExecutable>/application/job_template_1/run</streamingExecutable>
 			<defaultParameters>
-			        <parameter id="time_start" title="Time Start" abstract="Time start to search inputs" scope="runtime" type="opensearch" target="time:start">2015-04-23</parameter>
-				<parameter id="time_end" title="Time End" abstract="Time end to search inputs" scope="runtime" type="opensearch" target="time:end">2015-04-23</parameter>
+			        <parameter id="time_start" title="Time Start" abstract="Time start to search inputs" scope="runtime" type="opensearch" target="time:start">2015-09-24</parameter>
+				<parameter id="time_end" title="Time End" abstract="Time end to search inputs" scope="runtime" type="opensearch" target="time:end">2015-09-24</parameter>
 				<parameter id="size_x">2500</parameter>
 				<parameter id="size_y">5000</parameter>
 			</defaultParameters>
@@ -38,7 +38,7 @@
 		<node id="node_data_access_tile">
 			<job id="data_access_tile"></job>
 			<sources>
-			        <source refid="cas:series">https://data2.terradue.com/eop/sentinel1/series/med/description</source>
+			        <source refid="file:urls">/home/sensyf-sdk/input.urls</source>
 			</sources>
 		</node>
 		<node id="node_oil_spill_detection">
