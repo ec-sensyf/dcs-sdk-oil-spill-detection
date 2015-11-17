@@ -44,10 +44,30 @@
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement"/>
   </node>
+  <node id="Calibration">
+    <operator>Calibration</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <sourceBands/>
+      <auxFile>Latest Auxiliary File</auxFile>
+      <externalAuxFile/>
+      <outputImageInComplex>false</outputImageInComplex>
+      <outputImageScaleInDb>false</outputImageScaleInDb>
+      <createGammaBand>false</createGammaBand>
+      <createBetaBand>false</createBetaBand>
+      <selectedPolarisations/>
+      <outputSigmaBand>true</outputSigmaBand>
+      <outputGammaBand>false</outputGammaBand>
+      <outputBetaBand>false</outputBetaBand>
+      <outputDNBand>false</outputDNBand>
+    </parameters>
+  </node>
   <node id="Ellipsoid-Correction-RD">
     <operator>Ellipsoid-Correction-RD</operator>
     <sources>
-      <sourceProduct refid="Read"/>
+      <sourceProduct refid="Calibration"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <sourceBands/>
@@ -67,8 +87,6 @@
   AXIS[&quot;Geodetic latitude&quot;, NORTH]]</mapProjection>
       <nodataValueAtSea>true</nodataValueAtSea>
       <saveDEM>false</saveDEM>
-      <saveLatLon>false</saveLatLon>
-      <saveIncidenceAngleFromEllipsoid>false</saveIncidenceAngleFromEllipsoid>
       <saveLocalIncidenceAngle>false</saveLocalIncidenceAngle>
       <saveProjectedLocalIncidenceAngle>false</saveProjectedLocalIncidenceAngle>
       <saveSelectedSourceBand>true</saveSelectedSourceBand>
@@ -99,8 +117,11 @@
     <node id="Land-Sea-Mask">
       <displayPosition x="276.0" y="130.0"/>
     </node>
+    <node id="Calibration">
+      <displayPosition x="103.0" y="109.0"/>
+    </node>
     <node id="Ellipsoid-Correction-RD">
-      <displayPosition x="97.0" y="171.0"/>
+      <displayPosition x="166.0" y="202.0"/>
     </node>
   </applicationData>
 </graph>
