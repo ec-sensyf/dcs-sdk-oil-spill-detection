@@ -40,18 +40,24 @@
   <node id="Land-Sea-Mask">
     <operator>Create-LandMask</operator>
     <sources>
-      <sourceProduct refid="Ellipsoid-Correction-GG"/>
+      <sourceProduct refid="Ellipsoid-Correction-RD"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement"/>
   </node>
-  <node id="Ellipsoid-Correction-GG">
-    <operator>Ellipsoid-Correction-GG</operator>
+  <node id="Ellipsoid-Correction-RD">
+    <operator>Ellipsoid-Correction-RD</operator>
     <sources>
       <sourceProduct refid="Read"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <sourceBands/>
+      <demName>SRTM 3Sec</demName>
+      <externalDEMFile/>
+      <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
+      <demResamplingMethod>BILINEAR_INTERPOLATION</demResamplingMethod>
       <imgResamplingMethod>BILINEAR_INTERPOLATION</imgResamplingMethod>
+      <pixelSpacingInMeter>0.0</pixelSpacingInMeter>
+      <pixelSpacingInDegree>0.0</pixelSpacingInDegree>
       <mapProjection>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
   DATUM[&quot;WGS84&quot;, &#xd;
     SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
@@ -59,6 +65,21 @@
   UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
   AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
   AXIS[&quot;Geodetic latitude&quot;, NORTH]]</mapProjection>
+      <nodataValueAtSea>true</nodataValueAtSea>
+      <saveDEM>false</saveDEM>
+      <saveLatLon>false</saveLatLon>
+      <saveIncidenceAngleFromEllipsoid>false</saveIncidenceAngleFromEllipsoid>
+      <saveLocalIncidenceAngle>false</saveLocalIncidenceAngle>
+      <saveProjectedLocalIncidenceAngle>false</saveProjectedLocalIncidenceAngle>
+      <saveSelectedSourceBand>true</saveSelectedSourceBand>
+      <applyRadiometricNormalization>false</applyRadiometricNormalization>
+      <saveSigmaNought>false</saveSigmaNought>
+      <saveGammaNought>false</saveGammaNought>
+      <saveBetaNought>false</saveBetaNought>
+      <incidenceAngleForSigma0>Use projected local incidence angle from DEM</incidenceAngleForSigma0>
+      <incidenceAngleForGamma0>Use projected local incidence angle from DEM</incidenceAngleForGamma0>
+      <auxFile>Latest Auxiliary File</auxFile>
+      <externalAuxFile/>
     </parameters>
   </node>
   <applicationData id="Presentation">
@@ -78,8 +99,8 @@
     <node id="Land-Sea-Mask">
       <displayPosition x="276.0" y="130.0"/>
     </node>
-    <node id="Ellipsoid-Correction-GG">
-      <displayPosition x="103.0" y="145.0"/>
+    <node id="Ellipsoid-Correction-RD">
+      <displayPosition x="97.0" y="171.0"/>
     </node>
   </applicationData>
 </graph>
