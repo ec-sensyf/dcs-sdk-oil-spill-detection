@@ -3,8 +3,8 @@
 		<jobTemplate id="data_access_tile">
 			<streamingExecutable>/application/job_template_1/run</streamingExecutable>
 			<defaultParameters>
-			        <parameter id="time_start" title="Time Start" abstract="Time start to search inputs" scope="runtime" type="opensearch" target="time:start">2015-09-24</parameter>
-				<parameter id="time_end" title="Time End" abstract="Time end to search inputs" scope="runtime" type="opensearch" target="time:end">2015-09-24</parameter>
+			        <parameter id="time_start" title="Time Start" abstract="Time start to search inputs" scope="runtime" type="opensearch" target="time:start">2015-11-10</parameter>
+				<parameter id="time_end" title="Time End" abstract="Time end to search inputs" scope="runtime" type="opensearch" target="time:end">2015-11-16</parameter>
 				<parameter id="size_x">2500</parameter>
 				<parameter id="size_y">5000</parameter>
 			</defaultParameters>
